@@ -3,7 +3,7 @@ import { StellarWalletsKit } from '@creit.tech/stellar-wallets-kit/sdk'
 import { defaultModules } from '@creit.tech/stellar-wallets-kit/modules/utils'
 import { Networks } from '@stellar/stellar-sdk'
 import './App.css'
-import type { DonationEvent, TransactionStatus, WalletErrorInfo, WalletOption, SyncStatus } from './types'
+import type { DonationEvent, SyncStatus, TransactionStatus, WalletErrorInfo, WalletOption } from './types'
 import {
   CONTRACT_ID,
   TESTNET_NETWORK_PASSPHRASE,
@@ -15,9 +15,9 @@ import {
 } from './lib/stellar'
 
 const DEFAULT_GOAL = 25000
-const INITIAL_RAISED = 12840
+const INITIAL_RAISED = 0
 const POLL_INTERVAL_MS = 12000
-const DEFAULT_REWARD_CONTRACT_ID = 'CAAPAPB4W7DVSIJOXHGCXJ45HFNFUBAFAODWASY7IKLFW3CX6GKJCB3C'
+const DEFAULT_REWARD_CONTRACT_ID = 'CAAPAPB4W7DIJOXHGCXJ45HFNFUBAFAODWASY7IKLFW3CX6GKJCB3C'
 
 const WALLET_OPTIONS: WalletOption[] = [
   { id: 'freighter', label: 'Freighter', note: 'Browser extension wallet' },
@@ -44,6 +44,11 @@ function App() {
   const hasBootedRef = useRef(false)
 
   const percent = useMemo(() => Math.min(100, Math.round((raised / goal) * 100)), [goal, raised])
+  const remaining = Math.max(goal - raised, 0)
+  const isFunded = raised >= goal
+  const connectedWallet = WALLET_OPTIONS.find((wallet) => wallet.id === selectedWallet)
+  const walletAvailability = availableWalletIds.length
+  const shortAddress = address ? `${address.slice(0, 8)}…${address.slice(-6)}` : 'Not connected'
 
   useEffect(() => {
     StellarWalletsKit.init({
@@ -266,11 +271,17 @@ function App() {
       <section className="hero-card">
         <div className="hero-copy">
           <p className="eyebrow">Level 2 · Stellar crowdfunding</p>
-          <h1>Support the next wave of public goods.</h1>
+          <h1>A live fundraising cockpit for the Stellar testnet.</h1>
           <p className="lead">
-            Use multiple wallet options, send a contract call, and review the funding state from the testnet
-            contract.
+            Connect a supported wallet, send a real Soroban donation, and watch the contract state update in
+            front of you.
           </p>
+
+          <div className="campaign-highlights" aria-label="Campaign overview">
+            <span>{isFunded ? 'Goal reached' : 'Open to donations'}</span>
+            <span>{walletAvailability > 0 ? `${walletAvailability} wallet(s) ready` : 'Scanning wallets'}</span>
+            <span>{shortAddress}</span>
+          </div>
 
           <div className="wallet-option-grid">
             {WALLET_OPTIONS.map((wallet) => (
@@ -299,24 +310,56 @@ function App() {
               <span>Goal</span>
             </div>
             <div>
+              <strong>{formatAmount(remaining)} XLM</strong>
+              <span>Remaining</span>
+            </div>
+            <div>
               <strong>{percent}%</strong>
               <span>Funded</span>
             </div>
-            <div>
+          </div>
+
+          <div className="progress-panel">
+            <div className="progress-label-row">
+              <span>Live contract sync</span>
               <strong>{syncStatus.toUpperCase()}</strong>
-              <span>Live sync</span>
+            </div>
+            <div className="progress-bar" aria-label="Crowdfunding progress">
+              <div style={{ width: `${percent}%` }} />
             </div>
           </div>
 
-          <div className="progress-bar" aria-label="Crowdfunding progress">
-            <div style={{ width: `${percent}%` }} />
+          <div className="signal-row">
+            <div>
+              <strong>Chain snapshot</strong>
+              <span>Goal, raised amount, and owner are refreshed on an interval.</span>
+            </div>
+            <div>
+              <strong>Reward flow</strong>
+              <span>Each donation also credits the reward contract in the same transaction path.</span>
+            </div>
+            <div>
+              <strong>Review friendly</strong>
+              <span>Debug, explorer, and transaction details stay visible while the flow runs.</span>
+            </div>
           </div>
         </div>
 
         <div className="panel-card">
           <div className={`status-pill status-${status}`}>{status.toUpperCase()}</div>
-          <h2>Wallet, contract, and state</h2>
+          <h2>Control panel</h2>
           <p>{message}</p>
+
+          <div className="mini-metrics">
+            <div>
+              <span>Wallet</span>
+              <strong>{connectedWallet?.label ?? 'Selected wallet'}</strong>
+            </div>
+            <div>
+              <span>Sync</span>
+              <strong>{syncStatus}</strong>
+            </div>
+          </div>
 
           <div className="button-row">
             <button type="button" onClick={connectWallet} className="primary-btn" disabled={!walletsReady}>
@@ -384,8 +427,11 @@ function App() {
 
       <section className="event-panel">
         <div className="section-heading">
-          <h2>Contract sync</h2>
-          <p>We poll the contract and show each completed donation in the activity feed.</p>
+          <div>
+            <h2>Contract sync</h2>
+            <p>We poll the contract and show each completed donation in the activity feed.</p>
+          </div>
+          <strong>{contractEvents.length} events</strong>
         </div>
 
         <div className="activity-list">
@@ -396,10 +442,12 @@ function App() {
           ) : (
             contractEvents.map((event) => (
               <article className="activity-card" key={event.id}>
-                <strong>{event.kind}</strong>
-                <span>{event.status}</span>
-                <p>{event.donor}</p>
-                <p>{formatAmount(event.amount)} XLM</p>
+                <div className="activity-card-top">
+                  <strong>{event.kind}</strong>
+                  <span>{event.status}</span>
+                </div>
+                <p className="activity-donor">{event.donor}</p>
+                <p className="activity-amount">{formatAmount(event.amount)} XLM</p>
               </article>
             ))
           )}

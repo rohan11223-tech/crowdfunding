@@ -1,6 +1,6 @@
 # Stellar Crowdfunding DApp
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel)](https://crowdfunding-mu-peach.vercel.app/) [![CI Pipeline](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?logo=github-actions)](https://github.com/rahuldev8789/Crowdfunding/actions) [![Live Demo](https://img.shields.io/badge/Live%20Demo-Open-blue)](https://crowdfunding-mu-peach.vercel.app/)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel)](https://crowdfunding-mu-peach.vercel.app/) [![CI Pipeline](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?logo=github-actions)](https://github.com/rohan11223-tech/Crowdfunding-level3/actions) [![Live Demo](https://img.shields.io/badge/Live%20Demo-Open-blue)](https://crowdfunding-mu-peach.vercel.app/)
 
 ## Overview
 
@@ -12,8 +12,8 @@ The emphasis is on clear architecture, visible proof, and a polished reviewer ex
 
 - Live app: https://crowdfunding-mu-peach.vercel.app/
 - Demo video: https://drive.google.com/file/d/1ZTSrL93AISNDjMiIF1L-CjSQ9bmmtSSa/view?usp=sharing
-- GitHub repository: https://github.com/rahuldev8789/Crowdfunding
-- Crowdfunding contract explorer: https://stellar.expert/explorer/testnet/contract/CB6Z2H3NUTBIYY7CUR5PKCF4YROK73Y5HWAF7RZAYIMRL322I7WIZ6L
+- GitHub repository: https://github.com/rohan11223-tech/Crowdfunding-level3
+- Crowdfunding contract explorer: https://stellar.expert/explorer/testnet/contract/CDEFFCCPYIIOEDSW2SWI5F2XH4B53JCBISTRZMUG7VVIFDR6RMFV22TQ
 - Reward contract explorer: https://stellar.expert/explorer/testnet/contract/CAAPAPB4W7DIJOXHGCXJ45HFNFUBAFAODWASY7IKLFW3CX6GKJCB3C
 
 ## What It Includes
@@ -175,9 +175,9 @@ Crowdfunding/
 
 ### Contract Details
 
-- Contract ID: `CB6Z2H3NUTBIYY7CUR5PKCF4YROK7SYHVP72GM54FZKJQMQZQZINPXTE`
-- Deployment Transaction: `9503aa0e2b59487be3e66cdb51ec22c8ee8f3771fc17359115437d9f2c33aa9b`
-- Contract Creation Transaction: `6e81e554427cf1b7ef716b711dc60d98bb88a7e847054867ccc020268142e37e`
+- Contract ID: `CDEFFCCPYIIOEDSW2SWI5F2XH4B53JCBISTRZMUG7VVIFDR6RMFV22TQ`
+- Deployment Transaction: `6b12945d115ca202be1a176dd9f25980a5612480fc6a2ed9919908636dbcfd90`
+- Contract Creation Transaction: `6b12945d115ca202be1a176dd9f25980a5612480fc6a2ed9919908636dbcfd90`
 - Reward Contract ID: `CAAPAPB4W7DVSIJOXHGCXJ45HFNFUBAFAODWASY7IKLFW3CX6GKJCB3C`
 - Reward Contract Deployment Transaction: `dd699988d411e72d4475717ab27bd889f572328213a83b1afdd8e1a54865e566`
 
@@ -191,8 +191,8 @@ Crowdfunding/
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/rahuldev8789/Crowdfunding.git
-   cd Crowdfunding
+   git clone https://github.com/rohan11223-tech/Crowdfunding-level3.git
+   cd Crowdfunding-level3
    npm install
    ```
 

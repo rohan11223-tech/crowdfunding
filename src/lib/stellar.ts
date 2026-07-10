@@ -4,7 +4,7 @@ export const TESTNET_NETWORK_PASSPHRASE = Networks.TESTNET
 export const HORIZON_URL = 'https://horizon-testnet.stellar.org'
 export const FRIENDBOT_URL = 'https://friendbot.stellar.org'
 export const RPC_URL = 'https://soroban-testnet.stellar.org'
-export const CONTRACT_ID = 'CB6Z2H3NUTBIYY7CUR5PKCF4YROK7SYHVP72GM54FZKJQMQZQZINPXTE'
+export const CONTRACT_ID = 'CDEFFCCPYIIOEDSW2SWI5F2XH4B53JCBISTRZMUG7VVIFDR6RMFV22TQ'
 export const TESTNET_EXPLORER_BASE = 'https://stellar.expert/explorer/testnet/contract'
 
 const rpcServer = new rpc.Server(RPC_URL, { allowHttp: false })
