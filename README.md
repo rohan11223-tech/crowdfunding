@@ -128,13 +128,13 @@ GitHub Actions runs the main project checks on push and pull request events:
 ## Screenshots
 
 ### Windows Dashboard
-<img width="1920" height="1020" alt="Screenshot 2026-07-10 213853" src="https://github.com/user-attachments/assets/fd51e9b6-41ca-4ba3-b2b8-36e177099c94" />
+![Windows Dashboard](./public/screenshots/windows-dashboard.png)
 
 ### Mobile Responsive UI
-<img width="262" height="576" alt="Screenshot 2026-07-10 033433" src="https://github.com/user-attachments/assets/86ed95dc-e18b-42b5-a306-7ec2c6a70e0e" />
+![Mobile Responsive UI](./public/screenshots/mobile-dashboard.png)
 
 ### CI Status
-<img width="857" height="250" alt="Screenshot 2026-07-10 033825" src="https://github.com/user-attachments/assets/519b43b3-c199-4722-ba8e-835a31ce0a06" />
+![CI Status](./public/screenshots/ci-cd-pipeline-running.svg)
 
 ### Test Output
 ![Test Output](./public/screenshots/test-output.svg)
