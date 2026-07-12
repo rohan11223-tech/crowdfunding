@@ -1,6 +1,6 @@
 # Stellar Crowdfunding DApp
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel)](https://crowdfunding-mu-peach.vercel.app/) [![CI Pipeline](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?logo=github-actions)](https://github.com/rohan11223-tech/crowdfunding/actions) [![Live Demo](https://img.shields.io/badge/Live%20Demo-Open-blue)](https://crowdfunding-mu-peach.vercel.app/)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel)](https://crowdfunding-mandal25.vercel.app/) [![CI Pipeline](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?logo=github-actions)](https://github.com/rohan11223-tech/crowdfunding/actions) [![Live Demo](https://img.shields.io/badge/Live%20Demo-Open-blue)](https://crowdfunding-mandal25.vercel.app/)
 
 ## Overview
 
@@ -10,7 +10,7 @@ The emphasis is on clear architecture, visible proof, and a polished reviewer ex
 
 ## Links
 
-- Live app: https://crowdfunding-mu-peach.vercel.app/
+- Live app: https://crowdfunding-mandal25.vercel.app/
 - Demo video: https://drive.google.com/file/d/1ZTSrL93AISNDjMiIF1L-CjSQ9bmmtSSa/view?usp=sharing
 - GitHub repository: https://github.com/rohan11223-tech/crowdfunding
 - Crowdfunding contract explorer: https://stellar.expert/explorer/testnet/contract/CDWV7LBUZCHV67AM4OVLRB3IVZITLSVSCPSS3GHOMDZO7DA5SEKMYM3R
