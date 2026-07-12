@@ -134,10 +134,10 @@ GitHub Actions runs the main project checks on push and pull request events:
 ![Mobile Responsive UI](./public/screenshots/mobile-dashboard.png)
 
 ### CI Status
-![CI Status](./public/screenshots/ci-cd-pipeline-running.svg)
+![CI Status](./public/screenshots/ci-cd-pipeline-running.png)
 
 ### Test Output
-![Test Output](./public/screenshots/test-output.svg)
+![Test Output](./public/screenshots/test-output.png)
 
 ## Folder Structure
 
