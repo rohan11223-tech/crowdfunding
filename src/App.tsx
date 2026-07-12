@@ -291,140 +291,194 @@ function App() {
   }
 
   return (
-    <main className="page-shell">
-      <section className="dashboard-grid">
-        <article className="dashboard-card summary-card">
-          <div className="card-head">
-            <div>
-              <h1><strong>crowdfunding</strong></h1>
-            </div>
+    <div className="app-container">
+      <header className="neo-header">
+        <div className="header-brand">
+          <span className="brand-logo">⚡</span>
+          <span className="brand-title">Stellar Crowdfunding DApp</span>
+        </div>
+        <div className="header-status">
+          <div className="network-pill">
+            <span className="pulse-dot"></span>
+            <span>Soroban Live Testnet</span>
           </div>
-
-          <div className="summary-grid" aria-label="Campaign summary">
-            {summaryItems.map((item) => (
-              <div key={item.label} className="summary-item">
-                <span>{item.label}</span>
-                <strong>{item.value}</strong>
-              </div>
-            ))}
+          <div className="wallet-pill">
+            <span>{address ? `Connected: ${shortAddress}` : 'Wallet Not Connected'}</span>
           </div>
+        </div>
+      </header>
 
-          <div className="progress-panel">
-            <div className="progress-label-row">
-              <span>{campaignState}</span>
-              <strong>{percent}%</strong>
-            </div>
-            <div className="progress-bar" aria-label="Crowdfunding progress">
-              <div style={{ width: `${percent}%` }} />
-            </div>
-          </div>
-
-          <div className="wallet-section">
-            <div className="section-heading compact">
+      <main className="page-shell">
+        <section className="dashboard-grid">
+          <article className="dashboard-card summary-card hero-card">
+            <div className="card-head">
               <div>
-                <h2>Wallets</h2>
+                <p className="eyebrow">DECENTRALIZED COMMUNITY FUNDRAISING</p>
+                <h1 className="hero-title">Fund the Next Era of Stellar Applications</h1>
               </div>
-              <strong>{availableWalletCount} ready</strong>
+            </div>
+            <p className="lead hero-subtitle">
+              Support our Soroban smart contract campaign on the Stellar testnet. Every donation automatically triggers an inter-contract call to our Reward Badge Contract, minting supporter verification tokens directly to your wallet.
+            </p>
+
+            <div className="summary-grid" aria-label="Campaign summary">
+              {summaryItems.map((item) => (
+                <div key={item.label} className="summary-item">
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                </div>
+              ))}
             </div>
 
-            <div className="wallet-option-grid">
-              {walletOptions.length === 0 ? (
-                <div className="wallet-empty">Scanning supported wallets...</div>
-              ) : (
-                walletOptions.map((wallet) => (
-                  <button
-                    key={wallet.id}
-                    type="button"
-                    className={`${selectedWallet === wallet.id ? 'wallet-chip active' : 'wallet-chip'}${
-                      !wallet.isAvailable ? ' disabled' : ''
-                    }`}
-                    onClick={() => setSelectedWallet(wallet.id)}
-                    disabled={!wallet.isAvailable}
-                  >
-                    <div className="wallet-chip-top">
-                      <img src={wallet.icon} alt="" aria-hidden="true" />
-                      <span className={`wallet-badge ${wallet.isAvailable ? 'available' : 'unavailable'}`}>
-                        {wallet.isAvailable ? 'Installed' : 'Install'}
-                      </span>
-                    </div>
-                    <strong>{wallet.name}</strong>
-                  </button>
-                ))
-              )}
+            <div className="progress-panel">
+              <div className="progress-label-row">
+                <span>{campaignState}</span>
+                <strong className="progress-percent">{percent}% Funded</strong>
+              </div>
+              <div className="progress-bar" aria-label="Crowdfunding progress">
+                <div className="progress-bar-fill" style={{ width: `${percent}%` }} />
+              </div>
             </div>
-          </div>
-        </article>
 
-        <article className="dashboard-card action-card">
-          <div className="card-head">
-            <div>
-              <h2>Sign and send</h2>
-            </div>
-            <span className={`status-pill status-${status}`}>{status.toUpperCase()}</span>
-          </div>
-
-          <p className="lead compact-lead">{message}</p>
-
-          <div className="button-row">
-            <button type="button" onClick={connectWallet} className="primary-btn" disabled={!walletsReady}>
-              {address ? 'Switch wallet' : 'Connect wallet'}
-            </button>
-          </div>
-
-          <label className="field">
-            <span>Amount</span>
-            <input value={amount} onChange={(event) => setAmount(event.target.value)} type="number" min="1" />
-          </label>
-
-          <button type="button" onClick={donate} className="primary-btn donate-btn">
-            Donate
-          </button>
-
-          {errorInfo ? (
-            <div className="error-box">
-              <strong>{errorInfo.code}</strong>
-              <p>{errorInfo.message}</p>
-            </div>
-          ) : null}
-
-          <div className="compact-details">
-            <div>
-              <span>Wallet</span>
-              <code>{selectedWalletOption?.name ?? 'Select'}</code>
-            </div>
-            <div>
-              <span>Address</span>
-              <code>{shortAddress}</code>
-            </div>
-            <div>
-              <span>Contract</span>
-              <code>{CONTRACT_ID}</code>
-            </div>
-            <div>
-              <span>Events</span>
-              <code>{contractEvents.length}</code>
-            </div>
-            <div>
-              <span>Owner</span>
-              <code>{contractOwner}</code>
-            </div>
-            <div>
-              <span>Explorer</span>
-              <a href={testnetExplorerUrl(CONTRACT_ID)} target="_blank" rel="noreferrer">
-                View on Explorer
+            <div className="reward-banner">
+              <div className="reward-icon">🏆</div>
+              <div className="reward-info">
+                <strong>Inter-Contract Reward Active</strong>
+                <p>Donating calls our Reward Badge Contract (<code>{rewardContractId.slice(0, 8)}...{rewardContractId.slice(-6)}</code>) to credit your supporter account automatically.</p>
+              </div>
+              <a href={testnetExplorerUrl(rewardContractId)} target="_blank" rel="noreferrer" className="reward-link">
+                View Badge Contract ↗
               </a>
             </div>
-          </div>
 
-          {txHash ? (
-            <div className="tx-box">
-              <span>Transaction</span>
-              <code>{txHash}</code>
+            <div className="wallet-section">
+              <div className="section-heading compact">
+                <div>
+                  <h2>Supported Stellar Wallets</h2>
+                </div>
+                <strong className="wallet-count-badge">{availableWalletCount} ready</strong>
+              </div>
+
+              <div className="wallet-option-grid">
+                {walletOptions.length === 0 ? (
+                  <div className="wallet-empty">Scanning supported wallets...</div>
+                ) : (
+                  walletOptions.map((wallet) => (
+                    <button
+                      key={wallet.id}
+                      type="button"
+                      className={`${selectedWallet === wallet.id ? 'wallet-chip active' : 'wallet-chip'}${
+                        !wallet.isAvailable ? ' disabled' : ''
+                      }`}
+                      onClick={() => setSelectedWallet(wallet.id)}
+                      disabled={!wallet.isAvailable}
+                    >
+                      <div className="wallet-chip-top">
+                        <img src={wallet.icon} alt="" aria-hidden="true" />
+                        <span className={`wallet-badge ${wallet.isAvailable ? 'available' : 'unavailable'}`}>
+                          {wallet.isAvailable ? 'Installed' : 'Install'}
+                        </span>
+                      </div>
+                      <strong>{wallet.name}</strong>
+                    </button>
+                  ))
+                )}
+              </div>
             </div>
-          ) : null}
-        </article>
-      </section>
-    </main>
+          </article>
+
+          <article className="dashboard-card action-card">
+            <div className="card-head">
+              <div>
+                <p className="eyebrow">ON-CHAIN ACTION</p>
+                <h2>Sign & Donate</h2>
+              </div>
+              <span className={`status-pill status-${status}`}>{status.toUpperCase()}</span>
+            </div>
+
+            <p className="lead compact-lead">{message}</p>
+
+            <div className="button-row">
+              <button type="button" onClick={connectWallet} className="primary-btn connect-action-btn" disabled={!walletsReady}>
+                {address ? 'Switch Wallet' : 'Connect Wallet'}
+              </button>
+            </div>
+
+            <div className="amount-section">
+              <label className="field">
+                <span>Donation Amount (XLM)</span>
+                <input value={amount} onChange={(event) => setAmount(event.target.value)} type="number" min="1" placeholder="Enter XLM amount" />
+              </label>
+
+              <div className="quick-select-row">
+                {['10', '50', '150', '500', '1000'].map((tier) => (
+                  <button
+                    key={tier}
+                    type="button"
+                    className={`quick-chip ${amount === tier ? 'active' : ''}`}
+                    onClick={() => setAmount(tier)}
+                  >
+                    +{tier} XLM
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button type="button" onClick={donate} className="primary-btn donate-btn">
+              ⚡ Donate & Claim Badge
+            </button>
+
+            {errorInfo ? (
+              <div className="error-box">
+                <strong>⚠️ {errorInfo.code}</strong>
+                <p>{errorInfo.message}</p>
+              </div>
+            ) : null}
+
+            <div className="compact-details">
+              <div>
+                <span>Selected Wallet</span>
+                <code>{selectedWalletOption?.name ?? 'Select'}</code>
+              </div>
+              <div>
+                <span>Your Address</span>
+                <code>{shortAddress}</code>
+              </div>
+              <div>
+                <span>Contract ID</span>
+                <code>{CONTRACT_ID.slice(0, 10)}...{CONTRACT_ID.slice(-8)}</code>
+              </div>
+              <div>
+                <span>Donation Events</span>
+                <code>{contractEvents.length} On-Chain</code>
+              </div>
+              <div>
+                <span>Campaign Owner</span>
+                <code>{contractOwner}</code>
+              </div>
+              <div>
+                <span>Stellar Explorer</span>
+                <a href={testnetExplorerUrl(CONTRACT_ID)} target="_blank" rel="noreferrer" className="explorer-link">
+                  View Contract ↗
+                </a>
+              </div>
+            </div>
+
+            {txHash ? (
+              <div className="tx-box">
+                <div className="tx-header">
+                  <strong>✅ Transaction Submitted</strong>
+                </div>
+                <code>{txHash}</code>
+                <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noreferrer" className="tx-explorer-btn">
+                  View on Stellar Expert ↗
+                </a>
+              </div>
+            ) : null}
+          </article>
+        </section>
+      </main>
+    </div>
   )
 }
 
