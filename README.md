@@ -14,7 +14,7 @@ The emphasis is on clear architecture, visible proof, and a polished reviewer ex
 - Demo video: https://drive.google.com/file/d/1ZTSrL93AISNDjMiIF1L-CjSQ9bmmtSSa/view?usp=sharing
 - GitHub repository: https://github.com/rohan11223-tech/Crowdfunding-level3
 - Crowdfunding contract explorer: https://stellar.expert/explorer/testnet/contract/CDEFFCCPYIIOEDSW2SWI5F2XH4B53JCBISTRZMUG7VVIFDR6RMFV22TQ
-- Reward contract explorer: https://stellar.expert/explorer/testnet/contract/CAAPAPB4W7DIJOXHGCXJ45HFNFUBAFAODWASY7IKLFW3CX6GKJCB3C
+- Reward contract explorer: https://stellar.expert/explorer/testnet/contract/CAAPAPB4W7DVSIJOXHGCXJ45HFNFUBAFAODWASY7IKLFW3CX6GKJCB3C
 
 ## What It Includes
 

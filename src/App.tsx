@@ -17,17 +17,14 @@ import {
 const DEFAULT_GOAL = 25000
 const INITIAL_RAISED = 0
 const POLL_INTERVAL_MS = 12000
-const DEFAULT_REWARD_CONTRACT_ID = 'CAAPAPB4W7DIJOXHGCXJ45HFNFUBAFAODWASY7IKLFW3CX6GKJCB3C'
-
-const WALLET_OPTIONS: WalletOption[] = [
-  { id: 'freighter', label: 'Freighter', note: 'Browser extension wallet' },
-  { id: 'lobstr', label: 'LOBSTR', note: 'Mobile-first wallet support' },
-]
+const DEFAULT_REWARD_CONTRACT_ID = 'CAAPAPB4W7DVSIJOXHGCXJ45HFNFUBAFAODWASY7IKLFW3CX6GKJCB3C'
 
 function App() {
-  const rewardContractId = import.meta.env.VITE_REWARD_CONTRACT_ID ?? DEFAULT_REWARD_CONTRACT_ID
+  const configuredRewardContractId = import.meta.env.VITE_REWARD_CONTRACT_ID?.trim()
+  const rewardContractId = configuredRewardContractId || DEFAULT_REWARD_CONTRACT_ID
   const [address, setAddress] = useState('')
-  const [selectedWallet, setSelectedWallet] = useState(WALLET_OPTIONS[0].id)
+  const [selectedWallet, setSelectedWallet] = useState('')
+  const [walletOptions, setWalletOptions] = useState<WalletOption[]>([])
   const [status, setStatus] = useState<TransactionStatus>('idle')
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle')
   const [message, setMessage] = useState('Connect a Stellar wallet to donate and track the campaign.')
@@ -39,16 +36,25 @@ function App() {
   const [txHash, setTxHash] = useState('')
   const [contractEvents, setContractEvents] = useState<DonationEvent[]>([])
   const [walletsReady, setWalletsReady] = useState(false)
-  const [availableWalletIds, setAvailableWalletIds] = useState<string[]>([])
-  const [debugSteps, setDebugSteps] = useState<string[]>(['App booted'])
   const hasBootedRef = useRef(false)
 
   const percent = useMemo(() => Math.min(100, Math.round((raised / goal) * 100)), [goal, raised])
   const remaining = Math.max(goal - raised, 0)
   const isFunded = raised >= goal
-  const connectedWallet = WALLET_OPTIONS.find((wallet) => wallet.id === selectedWallet)
-  const walletAvailability = availableWalletIds.length
-  const shortAddress = address ? `${address.slice(0, 8)}…${address.slice(-6)}` : 'Not connected'
+  const selectedWalletOption = walletOptions.find((wallet) => wallet.id === selectedWallet) ?? walletOptions[0]
+  const availableWalletCount = walletOptions.filter((wallet) => wallet.isAvailable).length
+  const shortAddress = address ? `${address.slice(0, 8)}...${address.slice(-6)}` : 'Not connected'
+  const campaignState = isFunded ? 'Goal reached' : `${formatAmount(remaining)} XLM remaining`
+  const summaryItems = [
+    {
+      label: 'Raised',
+      value: `${formatAmount(raised)} XLM`,
+    },
+    {
+      label: 'Goal',
+      value: `${goal.toLocaleString()} XLM`,
+    },
+  ]
 
   useEffect(() => {
     StellarWalletsKit.init({
@@ -62,7 +68,24 @@ function App() {
 
     void StellarWalletsKit.refreshSupportedWallets()
       .then((wallets) => {
-        setAvailableWalletIds(wallets.filter((wallet) => wallet.isAvailable).map((wallet) => wallet.id))
+        const mappedWallets = wallets.map((wallet) => ({
+          id: wallet.id,
+          name: wallet.name,
+          type: wallet.type,
+          icon: wallet.icon,
+          url: wallet.url,
+          isAvailable: wallet.isAvailable,
+        }))
+
+        setWalletOptions(mappedWallets)
+        const firstAvailableWallet = mappedWallets.find((wallet) => wallet.isAvailable)
+        setSelectedWallet((currentSelected) => {
+          if (currentSelected && mappedWallets.some((wallet) => wallet.id === currentSelected)) {
+            return currentSelected
+          }
+
+          return firstAvailableWallet?.id ?? mappedWallets[0]?.id ?? ''
+        })
       })
       .finally(() => {
         setWalletsReady(true)
@@ -103,7 +126,6 @@ function App() {
   }
 
   const pushDebugStep = (step: string) => {
-    setDebugSteps((current) => [step, ...current].slice(0, 6))
     console.debug(`[ui] ${step}`)
   }
 
@@ -120,30 +142,30 @@ function App() {
     if (normalized.includes('not found') || normalized.includes('not installed') || normalized.includes('missing')) {
       return {
         code: 'wallet-not-found' as const,
-        message: `No available ${selectedWallet.toUpperCase()} wallet was found. Install, unlock, or switch to a supported wallet.`,
+        message: `No available ${selectedWalletOption?.name?.toUpperCase() ?? 'wallet'} wallet was found. Install, unlock, or switch to a supported wallet.`,
       }
     }
 
     return {
       code: 'wallet-unavailable' as const,
-      message: `The selected ${selectedWallet.toUpperCase()} wallet could not be reached. Open it, unlock it, and retry.`,
+      message: `The selected ${selectedWalletOption?.name?.toUpperCase() ?? 'wallet'} wallet could not be reached. Open it, unlock it, and retry.`,
     }
   }
 
-  const isWalletAvailable = (walletId: string) => availableWalletIds.length === 0 || availableWalletIds.includes(walletId)
+  const isWalletAvailable = (walletId: string) => walletOptions.find((wallet) => wallet.id === walletId)?.isAvailable ?? false
 
   const connectWallet = async () => {
     setErrorInfo(null)
     setStatus('pending')
     setMessage('Opening the wallet selector...')
-    pushDebugStep(`Connecting with ${selectedWallet.toUpperCase()}`)
+    pushDebugStep(`Connecting with ${selectedWalletOption?.name?.toUpperCase() ?? 'wallet'}`)
 
-    if (!isWalletAvailable(selectedWallet)) {
+    if (!selectedWallet || !isWalletAvailable(selectedWallet)) {
       markError(
         'wallet-not-found',
-        `The selected ${selectedWallet.toUpperCase()} wallet is not available in this browser. Try Freighter or LOBSTR.`,
+        `The selected wallet is not available in this browser. Choose one of the available Stellar wallets below.`,
       )
-      pushDebugStep(`Wallet unavailable: ${selectedWallet.toUpperCase()}`)
+      pushDebugStep('Wallet unavailable in browser')
       return
     }
 
@@ -152,7 +174,7 @@ function App() {
       const { address: walletAddress } = await StellarWalletsKit.fetchAddress()
       setAddress(walletAddress)
       setStatus('success')
-      setMessage(`Connected to ${selectedWallet.toUpperCase()} and ready to sign.`)
+      setMessage(`Connected to ${selectedWalletOption?.name ?? 'wallet'} and ready to sign.`)
       pushDebugStep(`Wallet connected: ${walletAddress.slice(0, 8)}...`)
     } catch (error) {
       const rawMessage = error instanceof Error ? error.message : 'Wallet connection failed.'
@@ -254,7 +276,9 @@ function App() {
       const rawMessage = error instanceof Error ? error.message : 'Donation transaction failed.'
       const normalized = rawMessage.toLowerCase()
 
-      if (normalized.includes('insufficient')) {
+      if (normalized.includes('unsupported reward contract address') || normalized.includes('[reward-contract]')) {
+        markError('contract-address-invalid', rawMessage)
+      } else if (normalized.includes('insufficient')) {
         markError('insufficient-balance', rawMessage)
       } else if (normalized.includes('reject')) {
         markError('user-rejected', rawMessage)
@@ -268,98 +292,78 @@ function App() {
 
   return (
     <main className="page-shell">
-      <section className="hero-card">
-        <div className="hero-copy">
-          <p className="eyebrow">Level 2 · Stellar crowdfunding</p>
-          <h1>A live fundraising cockpit for the Stellar testnet.</h1>
-          <p className="lead">
-            Connect a supported wallet, send a real Soroban donation, and watch the contract state update in
-            front of you.
-          </p>
-
-          <div className="campaign-highlights" aria-label="Campaign overview">
-            <span>{isFunded ? 'Goal reached' : 'Open to donations'}</span>
-            <span>{walletAvailability > 0 ? `${walletAvailability} wallet(s) ready` : 'Scanning wallets'}</span>
-            <span>{shortAddress}</span>
+      <section className="dashboard-grid">
+        <article className="dashboard-card summary-card">
+          <div className="card-head">
+            <div>
+              <h1><strong>crowdfunding</strong></h1>
+            </div>
           </div>
 
-          <div className="wallet-option-grid">
-            {WALLET_OPTIONS.map((wallet) => (
-              <button
-                key={wallet.id}
-                type="button"
-                className={`${selectedWallet === wallet.id ? 'wallet-chip active' : 'wallet-chip'}${
-                  !isWalletAvailable(wallet.id) ? ' disabled' : ''
-                }`}
-                onClick={() => setSelectedWallet(wallet.id)}
-                disabled={!isWalletAvailable(wallet.id)}
-              >
-                <strong>{wallet.label}</strong>
-                <span>{wallet.note}</span>
-              </button>
+          <div className="summary-grid" aria-label="Campaign summary">
+            {summaryItems.map((item) => (
+              <div key={item.label} className="summary-item">
+                <span>{item.label}</span>
+                <strong>{item.value}</strong>
+              </div>
             ))}
-          </div>
-
-          <div className="stats-grid">
-            <div>
-              <strong>{formatAmount(raised)} XLM</strong>
-              <span>Raised</span>
-            </div>
-            <div>
-              <strong>{goal.toLocaleString()} XLM</strong>
-              <span>Goal</span>
-            </div>
-            <div>
-              <strong>{formatAmount(remaining)} XLM</strong>
-              <span>Remaining</span>
-            </div>
-            <div>
-              <strong>{percent}%</strong>
-              <span>Funded</span>
-            </div>
           </div>
 
           <div className="progress-panel">
             <div className="progress-label-row">
-              <span>Live contract sync</span>
-              <strong>{syncStatus.toUpperCase()}</strong>
+              <span>{campaignState}</span>
+              <strong>{percent}%</strong>
             </div>
             <div className="progress-bar" aria-label="Crowdfunding progress">
               <div style={{ width: `${percent}%` }} />
             </div>
           </div>
 
-          <div className="signal-row">
-            <div>
-              <strong>Chain snapshot</strong>
-              <span>Goal, raised amount, and owner are refreshed on an interval.</span>
+          <div className="wallet-section">
+            <div className="section-heading compact">
+              <div>
+                <h2>Wallets</h2>
+              </div>
+              <strong>{availableWalletCount} ready</strong>
             </div>
-            <div>
-              <strong>Reward flow</strong>
-              <span>Each donation also credits the reward contract in the same transaction path.</span>
-            </div>
-            <div>
-              <strong>Review friendly</strong>
-              <span>Debug, explorer, and transaction details stay visible while the flow runs.</span>
+
+            <div className="wallet-option-grid">
+              {walletOptions.length === 0 ? (
+                <div className="wallet-empty">Scanning supported wallets...</div>
+              ) : (
+                walletOptions.map((wallet) => (
+                  <button
+                    key={wallet.id}
+                    type="button"
+                    className={`${selectedWallet === wallet.id ? 'wallet-chip active' : 'wallet-chip'}${
+                      !wallet.isAvailable ? ' disabled' : ''
+                    }`}
+                    onClick={() => setSelectedWallet(wallet.id)}
+                    disabled={!wallet.isAvailable}
+                  >
+                    <div className="wallet-chip-top">
+                      <img src={wallet.icon} alt="" aria-hidden="true" />
+                      <span className={`wallet-badge ${wallet.isAvailable ? 'available' : 'unavailable'}`}>
+                        {wallet.isAvailable ? 'Installed' : 'Install'}
+                      </span>
+                    </div>
+                    <strong>{wallet.name}</strong>
+                  </button>
+                ))
+              )}
             </div>
           </div>
-        </div>
+        </article>
 
-        <div className="panel-card">
-          <div className={`status-pill status-${status}`}>{status.toUpperCase()}</div>
-          <h2>Control panel</h2>
-          <p>{message}</p>
-
-          <div className="mini-metrics">
+        <article className="dashboard-card action-card">
+          <div className="card-head">
             <div>
-              <span>Wallet</span>
-              <strong>{connectedWallet?.label ?? 'Selected wallet'}</strong>
+              <h2>Sign and send</h2>
             </div>
-            <div>
-              <span>Sync</span>
-              <strong>{syncStatus}</strong>
-            </div>
+            <span className={`status-pill status-${status}`}>{status.toUpperCase()}</span>
           </div>
+
+          <p className="lead compact-lead">{message}</p>
 
           <div className="button-row">
             <button type="button" onClick={connectWallet} className="primary-btn" disabled={!walletsReady}>
@@ -367,20 +371,13 @@ function App() {
             </button>
           </div>
 
-          {address ? (
-            <div className="address-box">
-              <span>Connected address</span>
-              <code>{address}</code>
-            </div>
-          ) : null}
-
           <label className="field">
-            <span>Donation amount (XLM)</span>
+            <span>Amount</span>
             <input value={amount} onChange={(event) => setAmount(event.target.value)} type="number" min="1" />
           </label>
 
           <button type="button" onClick={donate} className="primary-btn donate-btn">
-            Call contract
+            Donate
           </button>
 
           {errorInfo ? (
@@ -390,68 +387,42 @@ function App() {
             </div>
           ) : null}
 
-          <div className="tx-grid">
-            {txHash ? (
-              <div className="tx-box">
-                <span>Transaction status</span>
-                <code>{txHash}</code>
-              </div>
-            ) : null}
-            <div className="tx-box">
-              <span>Contract address</span>
+          <div className="compact-details">
+            <div>
+              <span>Wallet</span>
+              <code>{selectedWalletOption?.name ?? 'Select'}</code>
+            </div>
+            <div>
+              <span>Address</span>
+              <code>{shortAddress}</code>
+            </div>
+            <div>
+              <span>Contract</span>
               <code>{CONTRACT_ID}</code>
             </div>
-            <div className="tx-box">
+            <div>
+              <span>Events</span>
+              <code>{contractEvents.length}</code>
+            </div>
+            <div>
+              <span>Owner</span>
+              <code>{contractOwner}</code>
+            </div>
+            <div>
               <span>Explorer</span>
               <a href={testnetExplorerUrl(CONTRACT_ID)} target="_blank" rel="noreferrer">
-                View contract on Stellar Explorer
+                View on Explorer
               </a>
             </div>
           </div>
 
-          <div className="contract-meta">
-            <span>Contract owner</span>
-            <code>{contractOwner}</code>
-          </div>
-
-          <div className="debug-box">
-            <span>Debug trail</span>
-            <ul>
-              {debugSteps.map((step) => (
-                <li key={step}>{step}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section className="event-panel">
-        <div className="section-heading">
-          <div>
-            <h2>Contract sync</h2>
-            <p>We poll the contract and show each completed donation in the activity feed.</p>
-          </div>
-          <strong>{contractEvents.length} events</strong>
-        </div>
-
-        <div className="activity-list">
-          {contractEvents.length === 0 ? (
-            <div className="activity-card muted">
-              No contract calls yet. Connect a wallet and submit a donation to create the first event.
+          {txHash ? (
+            <div className="tx-box">
+              <span>Transaction</span>
+              <code>{txHash}</code>
             </div>
-          ) : (
-            contractEvents.map((event) => (
-              <article className="activity-card" key={event.id}>
-                <div className="activity-card-top">
-                  <strong>{event.kind}</strong>
-                  <span>{event.status}</span>
-                </div>
-                <p className="activity-donor">{event.donor}</p>
-                <p className="activity-amount">{formatAmount(event.amount)} XLM</p>
-              </article>
-            ))
-          )}
-        </div>
+          ) : null}
+        </article>
       </section>
     </main>
   )

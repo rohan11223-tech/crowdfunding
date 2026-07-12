@@ -1,4 +1,4 @@
-import { Networks, Operation, TransactionBuilder, rpc, scValToNative, nativeToScVal, xdr } from '@stellar/stellar-sdk'
+import { Address, Networks, Operation, TransactionBuilder, rpc, scValToNative, nativeToScVal, xdr } from '@stellar/stellar-sdk'
 
 export const TESTNET_NETWORK_PASSPHRASE = Networks.TESTNET
 export const HORIZON_URL = 'https://horizon-testnet.stellar.org'
@@ -72,6 +72,15 @@ export const buildDonationTransaction = async ({
     }
   }
   const fee = '100'
+  let rewardContractAddress: Address
+  try {
+    rewardContractAddress = Address.fromString(rewardContractId.trim())
+  } catch {
+    throw new Error(
+      `[reward-contract] Unsupported reward contract address: ${rewardContractId}. ` +
+        `Expected a Stellar contract ID.`,
+    )
+  }
 
   const tx = new TransactionBuilder(account, {
     fee,
@@ -84,7 +93,7 @@ export const buildDonationTransaction = async ({
         args: [
           nativeToScVal(donor, { type: 'string' }),
           nativeToScVal(BigInt(Math.round(amount)), { type: 'i128' }),
-          nativeToScVal(rewardContractId, { type: 'address' }),
+          nativeToScVal(rewardContractAddress, { type: 'address' }),
         ],
       }),
     )
