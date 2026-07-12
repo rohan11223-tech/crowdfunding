@@ -17,7 +17,7 @@ import {
 const DEFAULT_GOAL = 25000
 const INITIAL_RAISED = 0
 const POLL_INTERVAL_MS = 12000
-const DEFAULT_REWARD_CONTRACT_ID = 'CAAPAPB4W7DVSIJOXHGCXJ45HFNFUBAFAODWASY7IKLFW3CX6GKJCB3C'
+const DEFAULT_REWARD_CONTRACT_ID = 'CDXUZNGUPVZMX3QQLSDRFRRYTSZVWLSQFQZDC7OSQJ2QB5BWHGT2KJA6'
 
 function App() {
   const configuredRewardContractId = import.meta.env.VITE_REWARD_CONTRACT_ID?.trim()
@@ -26,7 +26,7 @@ function App() {
   const [selectedWallet, setSelectedWallet] = useState('')
   const [walletOptions, setWalletOptions] = useState<WalletOption[]>([])
   const [status, setStatus] = useState<TransactionStatus>('idle')
-  const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle')
+  const [, setSyncStatus] = useState<SyncStatus>('idle')
   const [message, setMessage] = useState('Connect a Stellar wallet to donate and track the campaign.')
   const [errorInfo, setErrorInfo] = useState<WalletErrorInfo | null>(null)
   const [amount, setAmount] = useState('150')

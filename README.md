@@ -13,8 +13,8 @@ The emphasis is on clear architecture, visible proof, and a polished reviewer ex
 - Live app: https://crowdfunding-mu-peach.vercel.app/
 - Demo video: https://drive.google.com/file/d/1ZTSrL93AISNDjMiIF1L-CjSQ9bmmtSSa/view?usp=sharing
 - GitHub repository: https://github.com/rohan11223-tech/Crowdfunding-level3
-- Crowdfunding contract explorer: https://stellar.expert/explorer/testnet/contract/CDEFFCCPYIIOEDSW2SWI5F2XH4B53JCBISTRZMUG7VVIFDR6RMFV22TQ
-- Reward contract explorer: https://stellar.expert/explorer/testnet/contract/CAAPAPB4W7DVSIJOXHGCXJ45HFNFUBAFAODWASY7IKLFW3CX6GKJCB3C
+- Crowdfunding contract explorer: https://stellar.expert/explorer/testnet/contract/CDWV7LBUZCHV67AM4OVLRB3IVZITLSVSCPSS3GHOMDZO7DA5SEKMYM3R
+- Reward contract explorer: https://stellar.expert/explorer/testnet/contract/CDXUZNGUPVZMX3QQLSDRFRRYTSZVWLSQFQZDC7OSQJ2QB5BWHGT2KJA6
 
 ## What It Includes
 
@@ -175,11 +175,11 @@ Crowdfunding/
 
 ### Contract Details
 
-- Contract ID: `CDEFFCCPYIIOEDSW2SWI5F2XH4B53JCBISTRZMUG7VVIFDR6RMFV22TQ`
-- Deployment Transaction: `6b12945d115ca202be1a176dd9f25980a5612480fc6a2ed9919908636dbcfd90`
-- Contract Creation Transaction: `6b12945d115ca202be1a176dd9f25980a5612480fc6a2ed9919908636dbcfd90`
-- Reward Contract ID: `CAAPAPB4W7DVSIJOXHGCXJ45HFNFUBAFAODWASY7IKLFW3CX6GKJCB3C`
-- Reward Contract Deployment Transaction: `dd699988d411e72d4475717ab27bd889f572328213a83b1afdd8e1a54865e566`
+- Contract ID: `CDWV7LBUZCHV67AM4OVLRB3IVZITLSVSCPSS3GHOMDZO7DA5SEKMYM3R`
+- Deployment Transaction: `7ec28fb7a4a76a737815ecf1fdc9e43f2a53b180b2d50e1a0d249bc8db2bad83`
+- Contract Creation Transaction: `7ec28fb7a4a76a737815ecf1fdc9e43f2a53b180b2d50e1a0d249bc8db2bad83`
+- Reward Contract ID: `CDXUZNGUPVZMX3QQLSDRFRRYTSZVWLSQFQZDC7OSQJ2QB5BWHGT2KJA6`
+- Reward Contract Deployment Transaction: `c454133373d1f481cbfa9d5a2736994f020df8047072727f8b77ed38d6d0c8ca`
 
 ### Notes For Judges
 
