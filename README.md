@@ -11,7 +11,7 @@ The emphasis is on clear architecture, visible proof, and a polished reviewer ex
 ## Links
 
 - Live app: https://crowdfunding-mandal25.vercel.app/
-- Demo video: https://drive.google.com/file/d/1ZTSrL93AISNDjMiIF1L-CjSQ9bmmtSSa/view?usp=sharing
+- Demo video: https://drive.google.com/file/d/1Me7IvigXKzr0yMh3jrjmmNLFRBWKpMwS/view?usp=sharing
 - GitHub repository: https://github.com/rohan11223-tech/crowdfunding
 - Crowdfunding contract explorer: https://stellar.expert/explorer/testnet/contract/CDWV7LBUZCHV67AM4OVLRB3IVZITLSVSCPSS3GHOMDZO7DA5SEKMYM3R
 - Reward contract explorer: https://stellar.expert/explorer/testnet/contract/CDXUZNGUPVZMX3QQLSDRFRRYTSZVWLSQFQZDC7OSQJ2QB5BWHGT2KJA6
